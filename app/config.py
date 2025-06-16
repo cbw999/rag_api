@@ -1,17 +1,19 @@
 # app/config.py
 import os
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv(), override=True)
+
 import json
 import boto3
 import logging
 import urllib.parse
 from enum import Enum
 from datetime import datetime
-from dotenv import find_dotenv, load_dotenv
+
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.services.vector_store.factory import get_vector_store
-
-load_dotenv(find_dotenv())
 
 
 class VectorDBType(Enum):
@@ -49,8 +51,8 @@ if not os.path.exists(RAG_UPLOAD_DIR):
 VECTOR_DB_TYPE = VectorDBType(
     get_env_variable("VECTOR_DB_TYPE", VectorDBType.PGVECTOR.value)
 )
-POSTGRES_DB = get_env_variable("POSTGRES_DB", "mydatabase")
-POSTGRES_USER = get_env_variable("POSTGRES_USER", "myuser")
+POSTGRES_DB = get_env_variable("POSTGRES_DB")
+POSTGRES_USER = get_env_variable("POSTGRES_USER")
 POSTGRES_PASSWORD = get_env_variable("POSTGRES_PASSWORD", "mypassword")
 DB_HOST = get_env_variable("DB_HOST", "db")
 DB_PORT = get_env_variable("DB_PORT", "5432")
@@ -67,6 +69,8 @@ CHUNK_OVERLAP = int(get_env_variable("CHUNK_OVERLAP", "100"))
 
 env_value = get_env_variable("PDF_EXTRACT_IMAGES", "False").lower()
 PDF_EXTRACT_IMAGES = True if env_value == "true" else False
+
+print(f"POSTGRES_DB:{POSTGRES_DB}")
 
 CONNECTION_STRING = f"postgresql+psycopg2://{urllib.parse.quote_plus(POSTGRES_USER)}:{urllib.parse.quote_plus(POSTGRES_PASSWORD)}@{DB_HOST}:{DB_PORT}/{urllib.parse.quote_plus(POSTGRES_DB)}"
 DSN = f"postgresql://{urllib.parse.quote_plus(POSTGRES_USER)}:{urllib.parse.quote_plus(POSTGRES_PASSWORD)}@{DB_HOST}:{DB_PORT}/{urllib.parse.quote_plus(POSTGRES_DB)}"

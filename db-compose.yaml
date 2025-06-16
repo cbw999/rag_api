@@ -3,14 +3,22 @@ version: '3.8'
 services:
   db:
     image: ankane/pgvector:latest
+ #   build:
+ #     context: .                    # <-- Dockerfile이 있는 컨텍스트 경로 (현재 디렉토리)
+  #    dockerfile: DockerfilePgvector # <-- Dockerfile의 이름 지정
     environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: vectordb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: Asia/Seoul             # <-- 컨테이너 시스템 타임존 설정
     volumes:
       - pgdata2:/var/lib/postgresql/data
     ports:
       - "5433:5432"
-
+    # command: >
+    #   postgres
+    #   -c "TimeZone=Asia/Seoul"
+    #   -c "log_timezone=Asia/Seoul"
 volumes:
   pgdata2:
+

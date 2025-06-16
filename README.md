@@ -1,5 +1,96 @@
 ﻿# ID-based RAG FastAPI
 
+## uv를 사용하여 가상환경 파이션 설치 프로젝트 루트에 .python-version 파일을 생성하고 파이썬 버전을 기록해 두면 해당 디렉토리에서 uv venv 명령어를 --python 옵션없이 실행해도 uv가 해당 파일에 명시된 버전을 사용하여 가상환경을 설정 합니다.
+uv venv --python=3.10 이 명령어와 동일
+아래 파일이 있으면 그냥 uv venv 
+```
+.python-version 파일 내용
+3.10
+```
+## power shell 실행시 보안오류 발생시 파워쉘 관리자 권한으로 실행후 아래 명령어 실행
+```
+Set-ExecutionPolicy RemoteSigned
+```
+
+## 가상환경 활성화
+```
+.venv\Scripts\Activate.ps1
+```
+## 패키지 설치
+```
+uv pip install -r requirements.txt
+```
+
+## git 커밋전 전처리 오류 체크
+```bash
+uv pip install pre-commit
+pre-commit install
+```
+
+### postgres pgvector db 도커 기동
+```
+docker compose -f db-compose.yaml up -d
+```
+
+### 도커 로그 확인
+```
+docker compose -f db-compose.yaml logs -f
+```
+
+### 도커 서비스 중지
+```
+docker compose -f db-compose.yaml down
+```
+
+### 도커 컨테이너 상태 확인
+```
+docker compose -f db-compose.yaml ps
+```
+### 도커 내부 접속
+```
+docker compose -f db-compose.yaml exec db psql -U myuser mydatabase
+```
+### postgres timeZone 확인
+```
+docker compose -f db-compose.yaml exec db psql -U myuser mydatabase -c "SHOW timezone;"
+docker compose -f db-compose.yaml exec db psql -U myuser mydatabase -c "SELECT now();"
+```
+
+### 
+
+# 1. 기존 컨테이너 중지 및 제거 
+```
+docker compose -f db-compose.yaml down
+
+docker compose -f db-compose.yaml down --volumes  ## 로컬 저장소 파일까지 삭제 완전 초기화
+```
+
+# 2. 새로운 이미지를 빌드하고 컨테이너 기동
+# --build 옵션은 Dockerfile을 기반으로 이미지를 다시 빌드하도록 강제합니다.
+```
+docker compose -f db-compose.yaml up -d 
+
+docker compose -f db-compose.yaml up -d --build
+```
+
+## 도커 파일 접속후 postgres 계정에 timezone 설정
+```
+echo 'export TZ="Asia/Seoul"' >> .bash_profile
+source .bash_profile
+```
+
+## 서버기동
+```
+uvicorn main:app
+```
+## 브라우저 Swagger확인
+```
+http://127.0.0.1:8000/docs
+```
+
+
+
+
 ## Overview
 This project integrates Langchain with FastAPI in an Asynchronous, Scalable manner, providing a framework for document indexing and retrieval, using PostgreSQL/pgvector.
 

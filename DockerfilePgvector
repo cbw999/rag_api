@@ -1,0 +1,6 @@
+FROM ankane/pgvector:latest
+
+#RUN apt-get update && \
+#    apt-get install -y locales
+   # locale-gen ko_KR.UTF-8 \
+   # && rm -rf /var/lib/apt/lists/*    
